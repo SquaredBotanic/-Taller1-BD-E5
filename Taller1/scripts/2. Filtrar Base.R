@@ -168,3 +168,140 @@ mode_edu <- as.numeric(names(sort(table(data_webs$Nivel_educ), decreasing = TRUE
 data_webs <- data_webs  %>%
   mutate(Nivel_educ = ifelse(is.na(Nivel_educ) == TRUE, mode_edu , Nivel_educ))
 summary(data_webs$Nivel_educ)
+
+# 6. Analisis de valores atipicos -----------------------------------------------
+
+# 6.1. Graficas de cajas variables continuas
+
+## Ingresos MENSUALES imputado (CAMBIO AQUÍ)
+summary(data_webs$Ingreso_total_imp) 
+
+#Ingreso laboral Mensual
+b1 <- ggplot(data_webs, aes(x = "", y = Ingreso_total_imp)) +
+  geom_boxplot() +
+  theme_gray() +
+  labs(title = "Ingreso laboral mensual", x = "", y = "Pesos (COP)") + # Ajuste de etiqueta
+  theme(axis.text = element_text(size = 8)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold")
+  )
+b1
+
+# Edad
+summary(data_webs$Edad)
+b2 <- ggplot(data_webs, aes(x = "", y = Edad)) +
+  geom_boxplot() +
+  theme_gray() +
+  labs(title = "Edad", x = "", y = "anios") +
+  theme(axis.text = element_text(size = 8)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold")
+  )
+b2
+
+# Experiencia
+summary(data_webs$Experiencia_anios)
+b3 <- ggplot(data_webs, aes(x = "", y = Experiencia_anios)) +
+  geom_boxplot() +
+  theme_gray() +
+  labs(title = "Experiencia", x = "", y = "anios") +
+  theme(axis.text = element_text(size = 8)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold")  
+  )
+b3
+
+# Horas trabajadas
+summary(data_webs$Horas_trabajadas) 
+b4 <- ggplot(data_webs, aes(x = "", y = Horas_trabajadas)) +
+  geom_boxplot() +
+  theme_gray() +
+  labs(title = "Horas trabajadas", x = "", y = "Horas") +
+  theme(axis.text = element_text(size = 8)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold") 
+  )
+b4
+
+# Combinar los graficos en una cuadricula
+setwd(paste0(wd,"/Graficas"))
+png("graf_cajas.png") # Formato grafica
+box <- (b1+b2)/(b3+b4)
+box
+dev.off() # Cierra la grafica
+
+# 6.2. Tramiento valores atipicos ----------------------------------------------
+
+# Ingreso MENSUAL (CAMBIO AQUÍ)
+up <- quantile(data_webs$Ingreso_total_imp, 0.99, na.rm=T)
+data_webs <- data_webs %>% mutate(Ingreso_total_imp_win=  ifelse( test=( Ingreso_total_imp>= up), 
+                                                                  yes= up,
+                                                                  no= Ingreso_total_imp))
+# Edad 
+up <- quantile(data_webs$Edad, 0.99, na.rm=T)
+data_webs <- data_webs %>% mutate(Edad_win =  ifelse( test=( Edad>= up), 
+                                                      yes= up,
+                                                      no= Edad))
+# Experiencia 
+up <- quantile(data_webs$Experiencia, 0.99, na.rm=T)
+data_webs <- data_webs %>% mutate(Experiencia_win =  ifelse( test=( Experiencia>= up), 
+                                                             yes= up,
+                                                             no= Experiencia_anios))
+# Horas Trabajadas
+up <- quantile(data_webs$Horas_trabajadas, 0.99, na.rm=T)
+data_webs <- data_webs %>% mutate(Horas_trabajadas_win =  ifelse( test=( Horas_trabajadas>= up), 
+                                                                  yes= up,
+                                                                  no= Horas_trabajadas))
+
+#Mirar nuevamente las graficas de dispersion
+
+#Ingreso laboral MENSUAL winsorizado (CAMBIO Y CORRECCIÓN DE ERROR EN B5)
+b5 <- ggplot(data_webs, aes(x = "", y = Ingreso_total_imp_win)) +
+  geom_boxplot() +
+  theme_gray() +
+  labs(title = "Ingreso laboral mensual (Winsorizado)", x = "", y = "Pesos (COP)") +
+  theme(axis.text = element_text(size = 8)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold") 
+  )
+b5
+
+#Edad winsorizada
+b6 <- ggplot(data_webs, aes(x = "", y = Edad_win)) +
+  geom_boxplot() +
+  theme_gray() +
+  labs(title = "Edad", x = "", y = "Años") +
+  theme(axis.text = element_text(size = 8)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold") 
+  )
+b6
+
+#Experiencia winsorizada
+b7 <- ggplot(data_webs, aes(x = "", y = Experiencia_win)) +
+  geom_boxplot() +
+  theme_gray() +
+  labs(title = "Experiencia", x = "", y = "Años") +
+  theme(axis.text = element_text(size = 8)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold") 
+  )
+b7
+
+#Horas winsorizada
+b8 <- ggplot(data_webs, aes(x = "", y = Horas_trabajadas_win)) +
+  geom_boxplot() +
+  theme_gray() +
+  labs(title = "Horas trabajadas", x = "", y = "Horas") +
+  theme(axis.text = element_text(size = 8)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold") 
+  )
+b8  
+
+#Combinar graficas winsorizadas
+setwd(paste0(wd,"/Graficas"))
+png("graf_cajas_win.png") # Formato grafica
+box_win <- (b5+b6)/(b7+b8)
+box_win
+dev.off() # Cierra la grafica
