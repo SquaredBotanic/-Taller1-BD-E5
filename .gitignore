@@ -1,8 +1,13 @@
-"**/Base de datos/*"
-!"**/Base de datos/.gitkeep"
-"**/Graficas/*"
-!"**/Graficas/.gitkeep"
-"**/Regresiones/*"
-!"**/Regresiones/.gitkeep"
+# Ignore everything inside these folders
+**/Base*de*datos/*
+**/Graficas/*
+**/Regresiones/*
+
+# EXCEPT the .gitkeep files (this keeps the folders alive)
+!**/.gitkeep
+
+# R junk
 .Rhistory
 .RData
+.Ruserdata
+.Rproj.user/
