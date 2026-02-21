@@ -305,3 +305,26 @@ png("graf_cajas_win.png") # Formato grafica
 box_win <- (b5+b6)/(b7+b8)
 box_win
 dev.off() # Cierra la grafica
+
+
+# 7. Creacion variables nuevas -----------------------------------------------
+
+# CAMBIO: Logaritmo del ingreso MENSUAL
+data_webs$log_ing_m_imp = log(data_webs$Ingreso_total_imp)     # con valores atipicos
+data_webs$log_ing_m_win = log(data_webs$Ingreso_total_imp_win) # sin valores atipicos (winsorizado)
+
+data_webs <- data_webs %>% mutate (oficio_factor= as.factor(Profesion))
+data_webs <- data_webs %>% mutate (edu_factor= as.factor(Nivel_educ))
+data_webs <- data_webs %>% mutate (estrato_factor= as.factor(Estrato))
+data_webs <- data_webs %>% mutate (tfirma_factor= as.factor(Tamanio_empresa))
+
+data_webs$Mujer <- ifelse(data_webs$Sexo == 0, 1, 0)
+
+data_webs <- data_webs %>%
+  mutate( 
+    Edad2 = Edad_win^2, #Edad al cuadrado 
+    Experiencia_anios = Experiencia/12)
+
+#Descargar base de datos final
+setwd(paste0(wd,"/Base de datos"))
+export(data_webs, "base_final.rds")
