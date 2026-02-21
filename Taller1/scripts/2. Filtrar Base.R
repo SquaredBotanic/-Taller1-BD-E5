@@ -88,4 +88,83 @@ data_webs <- data_webs %>%
 
 data_webs$dummy_jefe <- ifelse(data_webs$Posicion_hogar == 1, 1, 0)
 data_webs <- data_webs %>% 
-  mutate(Experiencia_anios = Experiencia/12)
+mutate(Experiencia_anios = Experiencia/12) 
+
+
+# 4. Analisis de missings values -----------------------------------------------
+
+# 4.1 . Missings variables de interes ------------------------------------------
+# CAMBIO: Se sustituye Ingreso_hora por Ingreso_total en la selección
+data_table_missing <- data_webs %>% 
+  dplyr::select(Direccion, Secuencia, Orden, Edad, Sexo, Profesion, Trabajo_formal,
+                Estrato, Independiente, Horas_trabajadas, Tamanio_empresa, Nivel_educ, 
+                Ingreso_total, Ingreso_hora, Otros_ingresos, Experiencia_anios,
+                dummy_jefe, Trabajo_informal)
+
+## Grafica general
+setwd(paste0(wd,"/Graficas"))
+png("grafica_missing.png") # Formato grafica
+m1 <-vis_miss(data_table_missing) +
+  theme(axis.text.y = element_text(angle = 90), 
+        axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5), 
+        plot.subtitle = element_text(hjust = 0.5)) 
+m1
+dev.off() # Cierra la grafica
+
+
+# 4.2. Tabla porcentaje de Missing values --------------------------------------
+db_miss <- skim(data_table_missing) %>% dplyr::select(skim_variable, n_missing)
+Nobs= nrow(data_webs) 
+db_miss<- db_miss %>% filter(n_missing!= 0)
+db_miss<- db_miss %>% mutate(p_missing= n_missing/Nobs) %>% arrange(-n_missing)
+db_miss
+
+## Visualizar las 5 variables con mas missings
+setwd(paste0(wd,"/Graficas"))
+png("graf_missing_var_prin.png") # Formato grafica
+m2 <- ggplot(head(db_miss, 5), aes(x = reorder(skim_variable, +p_missing) , y =  p_missing)) +
+  geom_bar(stat = "identity", fill = "grey", color = "black") +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "", x = "Variables", y = "Missings") +
+  theme(axis.text = element_text(size = 10)) + 
+  theme(
+    plot.title = element_text(size = 10, face = "bold") 
+  )
+m2
+dev.off() # Cierra la grafica
+
+# Eliminar variable "otros ingresos" dado a que la mayor proporcion de sus valores son missings
+data_webs <- data_webs %>%
+  dplyr::select(-Otros_ingresos)
+
+
+# 5. Analisis de missings ------------------------------------------------------
+
+# 5.1 . Ingreso MENSUAL (CAMBIO REALIZADO AQUÍ) --------------------------------
+
+#Imputar el ingreso total MENSUAL promedio teniendo en cuenta el tipo de trabajador (asalariado e independiente) y por oficio
+
+data_webs <- data_webs %>%
+  group_by(Profesion, Independiente) %>%
+  mutate(Ingreso_total_imp = ifelse(is.na(Ingreso_total), mean(Ingreso_total, na.rm = TRUE), Ingreso_total))
+
+summary(data_webs$Ingreso_total_imp)
+
+# No existe valor promedio para imputar, por tanto se decide eliminar observaciones restantes.
+
+data_webs <- data_webs %>%
+  filter(!is.na(Ingreso_total_imp))
+
+summary(data_webs$Ingreso_total_imp)
+
+# 5.2. Imputacion educacion ----------------------------------------------------
+
+# Calcular la educacion de moda. 
+mode_edu <- as.numeric(names(sort(table(data_webs$Nivel_educ), decreasing = TRUE)[1]))
+
+### Imputar el valor missing. 
+data_webs <- data_webs  %>%
+  mutate(Nivel_educ = ifelse(is.na(Nivel_educ) == TRUE, mode_edu , Nivel_educ))
+summary(data_webs$Nivel_educ)
