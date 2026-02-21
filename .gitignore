@@ -1,17 +1,8 @@
-# Base de datos - matches anywhere in the repo
 "**/Base de datos/*"
 !"**/Base de datos/.gitkeep"
-
-# Graficas
 "**/Graficas/*"
 !"**/Graficas/.gitkeep"
-
-# Regresiones
 "**/Regresiones/*"
 !"**/Regresiones/.gitkeep"
-
-# R specific files
 .Rhistory
 .RData
-.Ruserdata
-.Rproj.user/
