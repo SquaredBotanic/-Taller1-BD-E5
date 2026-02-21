@@ -1,17 +1,14 @@
-# Base de datos
-
-"Base de datos/*"
-!"Base de datos/.gitkeep"
+# Base de datos (Using quotes for the space and prefix for the folder)
+"Taller1/Base de datos/*"
+!"Taller1/Base de datos/.gitkeep"
 
 # Graficas
-
-"Graficas/*"
-!"Graficas/.gitkeep"
+"Taller1/Graficas/*"
+!"Taller1/Graficas/.gitkeep"
 
 # Regresiones
-
-"Regresiones/*"
-!"Regresiones/.gitkeep"
+"Taller1/Regresiones/*"
+!"Taller1/Regresiones/.gitkeep"
 
 # R específicos
 .Rhistory
