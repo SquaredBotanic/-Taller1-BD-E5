@@ -122,3 +122,64 @@ density_plot_h <- ggplot(data = data_webs, aes(x = Horas_trabajadas_win)) +
     plot.title = element_text(size = 10, face = "bold")  # Cambia el tamaño y estilo del título
   )
 density_plot_h
+
+#iv. Experiencia
+media_exp <- mean(data_webs$Experiencia_win, na.rm = TRUE)
+density_plot_exp <- ggplot(data = data_webs, aes(x = Experiencia_win)) +
+  geom_density(fill = "grey", alpha = 0.5) +  # Rellena la curva de densidad
+  labs(title = "Gráfico de Densidad Experiencia", x = "Experiencia", y = "Densidad") +
+  geom_vline(aes(xintercept = media_exp), 
+             color = "red", linetype = "dashed", size = 1) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 10, face = "bold")  # Cambia el tamaño y estilo del título
+  )
+density_plot_exp
+
+##Combinar graficas
+densidad <- (density_plot_ing + density_plot_edad)/(density_plot_h + density_plot_exp)
+setwd(paste0(wd,"/Graficas"))
+png("Densidad.png") # Formato grafica
+densidad
+dev.off() # Cierra la grafica
+
+#6. Graficas de distribucion por sexo ----------------------------------------
+
+data_webs$sex <- factor(data_webs$Mujer, levels = c(1, 0), labels = c("Mujer", "Hombre"))
+
+## Graficas por Genero - entrepuestas
+box_plot <- ggplot(data = data_webs, aes(x = sex, y = Ingreso_total_imp_win, fill = sex)) + 
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("Mujer" = "red", "Hombre" = "blue"), labels = c("Mujer", "Hombre")) +
+  labs(title = "", x = "Género", y = "Ingreso Mensual (Pesos)", fill = "sex") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 10)  # Cambia el tamaño y estilo del título
+  )
+png("Caja_sexo.png") # Formato grafica
+box_plot
+dev.off() # Cierra la grafica
+
+
+#Graficas de distribucion del ingreso (INGRESO MENSUAL)
+den_plot <- ggplot(data_webs, aes(Ingreso_total_imp_win, fill=sex)) +
+  geom_density(alpha = 0.4) +  # Densidad superpuesta con transparencia
+  theme_minimal() +  # Tema minimalista
+  labs(title = "Gráfico de densidad del ingreso mensual según género",
+       x = "Ingreso Mensual",
+       y = "Densidad",
+       fill = "Sexo") +
+  # Actualización de vline con la nueva variable
+  geom_vline(aes(xintercept = mean(Ingreso_total_imp_win[sex == "Hombre"])), color = "blue", linetype = "dashed") + 
+  geom_vline(aes(xintercept = mean(Ingreso_total_imp_win[sex == "Mujer"])), color = "red", linetype = "dashed") +    
+  guides(fill = guide_legend(title = NULL, position = "bottom")) +  # Mueve la leyenda a la parte inferior
+  theme(
+    plot.title = element_text(size = 22),
+    axis.title.x = element_text(size = 18),
+    axis.title.y = element_text(size = 18),
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 16),
+    legend.text = element_text(size = 18),
+    legend.title = element_text(size = 20),
+    legend.position = "bottom"
+  )
