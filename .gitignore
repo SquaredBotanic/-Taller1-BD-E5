@@ -1,17 +1,17 @@
 # Base de datos
 
-Base de datos/*
-!Base de datos/.gitkeep
+"Base de datos/*"
+!"Base de datos/.gitkeep"
 
 # Graficas
 
-Graficas/*
-!Graficas/.gitkeep
+"Graficas/*"
+!"Graficas/.gitkeep"
 
 # Regresiones
 
-Regresiones/*
-!Regresiones/.gitkeep
+"Regresiones/*"
+!"Regresiones/.gitkeep"
 
 # R específicos
 .Rhistory
