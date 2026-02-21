@@ -31,3 +31,52 @@ corrplot(cor_matrix,
 cor_matrix
 dev.off() # Cierra la grafica
 
+
+#4. Tablas de variables principales POR SEPARADO -------------------------------
+
+# Definir variables de interés (Excluyendo "Mujer" ya que filtramos por ella)
+des_vars <- c("Ingreso_total_imp_win", "Edad_win", 
+              "Trabajo_informal", "Horas_trabajadas_win", 
+              "Experiencia_win", "Independiente", "dummy_jefe")
+
+nuevos_nombres <- c("Ingreso Mensual", "Edad", 
+                    "Trabajo Informal", "Horas Trabajadas", 
+                    "Experiencia", "Independiente", "Jefe de hogar")
+
+# Crear subconjuntos
+data_hombres <- subset(data_webs, Mujer == 0)
+data_mujeres <- subset(data_webs, Mujer == 1)
+
+
+# --- TABLA 1: HOMBRES ---
+stargazer(data_hombres[des_vars], 
+          type = "text", 
+          title = "Estadísticas Descriptivas - Hombres", 
+          digits = 1, 
+          out = "Tabla_Est_descriptivas_Hombres.txt",
+          covariate.labels = nuevos_nombres)
+
+# Codigo latex Hombres
+stargazer(data_hombres[des_vars], 
+          type = "latex",
+          title = "Estadísticas Descriptivas - Hombres", 
+          digits = 1,
+          covariate.labels = nuevos_nombres,
+          out = "Tabla_Est_descriptivas_Hombres.tex")
+
+
+# --- TABLA 2: MUJERES ---
+stargazer(data_mujeres[des_vars], 
+          type = "text", 
+          title = "Estadísticas Descriptivas - Mujeres", 
+          digits = 1, 
+          out = "Tabla_Est_descriptivas_Mujeres.txt",
+          covariate.labels = nuevos_nombres)
+
+# Codigo latex Mujeres
+stargazer(data_mujeres[des_vars], 
+          type = "latex",
+          title = "Estadísticas Descriptivas - Mujeres", 
+          digits = 1,
+          covariate.labels = nuevos_nombres,
+          out = "Tabla_Est_descriptivas_Mujeres.tex")
