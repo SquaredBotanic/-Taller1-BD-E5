@@ -183,3 +183,69 @@ den_plot <- ggplot(data_webs, aes(Ingreso_total_imp_win, fill=sex)) +
     legend.title = element_text(size = 20),
     legend.position = "bottom"
   )
+
+# Gráficas de distribución del ingreso para independientes (INGRESO MENSUAL)
+data_webs$Independiente <- as.factor(data_webs$Independiente)
+
+den_plot_independientes <- ggplot(data_webs, aes(Ingreso_total_imp_win, fill=Independiente)) +
+  geom_density(alpha = 0.4) +  # Densidad superpuesta con transparencia
+  theme_minimal() +  # Tema minimalista
+  labs(title = "Gráfico de densidad del ingreso mensual por tipo de trabajador",
+       x = "Ingreso Mensual",
+       y = "Densidad",
+       fill = "Tipo de trabajador") + 
+  # Actualización de vline con la nueva variable
+  geom_vline(aes(xintercept = mean(Ingreso_total_imp_win[Independiente == "0"])), color = "blue", linetype = "dashed") + 
+  geom_vline(aes(xintercept = mean(Ingreso_total_imp_win[Independiente == "1"])), color = "red", linetype = "dashed") +    
+  scale_fill_manual(values = c("0" = "blue", "1" = "red"), 
+                    labels = c("0" = "Dependientes", "1" = "Independientes")) + 
+  guides(fill = guide_legend(title = NULL, position = "bottom")) +  # Mueve la leyenda a la parte inferior
+  theme(
+    plot.title = element_text(size = 22),
+    axis.title.x = element_text(size = 18),
+    axis.title.y = element_text(size = 18),
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 16),
+    legend.text = element_text(size = 18),
+    legend.title = element_text(size = 20),
+    legend.position = "bottom"
+  )
+
+
+# Gráficas de distribución del ingreso para informales (INGRESO MENSUAL)
+data_webs$Trabajo_formal <- as.factor(data_webs$Trabajo_formal)
+
+den_plot_informales <- ggplot(data_webs, aes(Ingreso_total_imp_win, fill=Trabajo_formal)) +
+  geom_density(alpha = 0.4) +  # Densidad superpuesta con transparencia
+  theme_minimal() +  # Tema minimalista
+  labs(title = "Gráfico de densidad del ingreso mensual por formalidad",
+       x = "Ingreso Mensual",
+       y = "Densidad",
+       fill = "Tipo de trabajo") + 
+  # Actualización de vline con la nueva variable
+  geom_vline(aes(xintercept = mean(Ingreso_total_imp_win[Trabajo_formal == "0"])), color = "blue", linetype = "dashed") + 
+  geom_vline(aes(xintercept = mean(Ingreso_total_imp_win[Trabajo_formal == "1"])), color = "red", linetype = "dashed") +    
+  scale_fill_manual(values = c("0" = "blue", "1" = "red"), 
+                    labels = c("0" = "Informal", "1" = "Formal")) + 
+  guides(fill = guide_legend(title = NULL, position = "bottom")) +  # Mueve la leyenda a la parte inferior
+  theme(
+    plot.title = element_text(size = 22),
+    axis.title.x = element_text(size = 18),
+    axis.title.y = element_text(size = 18),
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 16),
+    legend.text = element_text(size = 18),
+    legend.title = element_text(size = 20),
+    legend.position = "bottom"
+  )
+
+##Combinar graficas
+densidad_tipo <- den_plot | den_plot_informales | den_plot_independientes
+
+# Establecer el directorio de trabajo para guardar la gráfica
+setwd(paste0(wd, "/Graficas"))
+
+# Guardar la gráfica combinada en un archivo PNG
+png("Densidad_tipo.png", width = 2400, height = 800) # Ajusta el tamaño según sea necesario
+densidad_tipo
+dev.off() # Cierra la gráfica
