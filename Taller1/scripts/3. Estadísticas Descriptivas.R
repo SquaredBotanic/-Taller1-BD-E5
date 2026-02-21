@@ -80,3 +80,45 @@ stargazer(data_mujeres[des_vars],
           digits = 1,
           covariate.labels = nuevos_nombres,
           out = "Tabla_Est_descriptivas_Mujeres.tex")
+
+#5. Graficas de distribucion generales ----------------------------------------
+
+#i. Ingreso MENSUAL
+media_ingreso <- mean(data_webs$Ingreso_total_imp_win, na.rm = TRUE)
+density_plot_ing <- ggplot(data = data_webs, aes(x = Ingreso_total_imp_win)) +
+  geom_density(fill = "grey", alpha = 0.5) +  # Rellena la curva de densidad
+  labs(title = "Gráfico de Densidad Ingreso Mensual", x = "Ingreso Mensual", y = "Densidad") +
+  geom_vline(aes(xintercept = media_ingreso), 
+             color = "red", linetype = "dashed", size = 1) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 10, face = "bold")  # Cambia el tamaño y estilo del título
+  )
+density_plot_ing
+
+
+# ii. Edad
+media_edad <- mean(data_webs$Edad_win, na.rm = TRUE)
+density_plot_edad <- ggplot(data = data_webs, aes(x = Edad_win)) +
+  geom_density(fill = "grey", alpha = 0.5) +  # Rellena la curva de densidad
+  labs(title = "Gráfico de Densidad Edad", x = "Edad", y = "Densidad") +
+  geom_vline(aes(xintercept = media_edad), 
+             color = "red", linetype = "dashed", size = 1) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 10, face = "bold")  # Cambia el tamaño y estilo del título
+  )
+density_plot_edad
+
+#iii. Horas trabajadas
+media_h <- mean(data_webs$Horas_trabajadas_win, na.rm = TRUE)
+density_plot_h <- ggplot(data = data_webs, aes(x = Horas_trabajadas_win)) +
+  geom_density(fill = "grey", alpha = 0.5) +  # Rellena la curva de densidad
+  labs(title = "Gráfico de Densidad Horas trabajadas", x = "Horas trabajadas", y = "Densidad") +
+  geom_vline(aes(xintercept = media_h), 
+             color = "red", linetype = "dashed", size = 1) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 10, face = "bold")  # Cambia el tamaño y estilo del título
+  )
+density_plot_h
